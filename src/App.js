@@ -4,9 +4,11 @@ import React, { useEffect, useState } from "react";
 /* Load images from the folders */
 const catchaCatImages = collectImages(require.context('./images/cats', false, /\.(png|jpe?g|svg)$/));
 const catchaCarImages = collectImages(require.context('./images/cars', false, /\.(png|jpe?g|svg)$/));
+const imageArray = collectImages(require.context('./images/grid_separated', false, /\.(png|jpe?g|svg)$/));
+
 const catchaIcons = collectImages(require.context('./images/icons', false, /\.(png|jpe?g|svg)$/));
 
-//console.log(JSON.stringify(catchaCatImages, null, 2));
+//console.log(JSON.stringify(imageArray, null, 2));
 
 /*
  * Render the webpage with the app
@@ -43,7 +45,7 @@ const catchaIcons = collectImages(require.context('./images/icons', false, /\.(p
 
           {/* Header */}
           <div className="catcha-header">
-            <p>Select all images with</p>
+            <p>Select all squares with</p>
             {/* If imageType is 0, show cats, otherwise, show cars. */}
             <h2>{imageType ? "cars" : "cats"}</h2>
             <p>Click verify once there are none left.</p>
@@ -135,11 +137,11 @@ const catchaIcons = collectImages(require.context('./images/icons', false, /\.(p
    //First load data from local storage, or else initialize empty arrays
    const [imageNumbersCats, setImageNumbersCats] = useState(
       JSON.parse(localStorage.getItem('imageNumbersCats')) ||
-      fillWithRandomNumbers(Object.keys(catchaCatImages).length)
+      fillWithRandomNumbers(Object.keys(imageArray).length)
     );
    const [imageNumbersCars, setImageNumbersCars] = useState(
       JSON.parse(localStorage.getItem('imageNumbersCars')) ||
-      fillWithRandomNumbers(Object.keys(catchaCarImages).length)
+      fillWithRandomNumbers(Object.keys(imageArray).length)
     );
 
   //store image type in local storage when either imageNumbersCats, or imageNumbersCars is updated
@@ -155,7 +157,7 @@ const catchaIcons = collectImages(require.context('./images/icons', false, /\.(p
  	const gridSize = 16;
  	const gridImages = [];
 
- 	const images = props.imageType ? catchaCarImages : catchaCatImages;
+ 	const images = props.imageType ? imageArray : imageArray;
   var imageNumbers = props.imageType ? imageNumbersCars : imageNumbersCats;
 
   //is there at least the same number of elements in the imageNumbers arrays as the grid size?
@@ -244,7 +246,8 @@ function fillWithRandomNumbers(numElements) {
  function CatchaImage(props) {
 
  	//filename of the image to load, depending on which folder it's coming from - cars or cats.
- 	var fileName = (props.imageType ? "cars" : "cats") + "_" + props.fileNumber + ".jpg";
+ 	var fileName = "grid01"+ "_" + String(props.imageIndex).padStart(2, '0') + ".jpg";
+  console.log(fileName);
 
   /*
    * State variables
