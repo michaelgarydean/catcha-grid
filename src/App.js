@@ -2,10 +2,10 @@ import './App.scss';
 import React, { useEffect, useState } from "react";
 
 /* Load images from the folders */
-const catchaCatImages = collectImages(require.context('./images/cats', false, /\.(png|jpe?g|svg)$/));
-const catchaCarImages = collectImages(require.context('./images/cars', false, /\.(png|jpe?g|svg)$/));
-const imageArray = collectImages(require.context('./images/grid_separated', false, /\.(png|jpe?g|svg)$/));
 
+/* THIS IS WHAT IS CAUSING IT TO BE SLOW */
+//const imageArray = collectImages(require.context('./images/grid_separated', false, /\.(png|jpe?g|svg)$/));
+const totalAvailableGridImages = 50;
 const catchaIcons = collectImages(require.context('./images/icons', false, /\.(png|jpe?g|svg)$/));
 
 //console.log(JSON.stringify(imageArray, null, 2));
@@ -31,7 +31,6 @@ const catchaIcons = collectImages(require.context('./images/icons', false, /\.(p
   useEffect(() => {
   	localStorage.setItem("imageType", JSON.stringify(imageType));
   });
-
 
   return (
 	  	<div className="App">
@@ -135,19 +134,14 @@ const catchaIcons = collectImages(require.context('./images/icons', false, /\.(p
    */
 
    //First load data from local storage, or else initialize empty arrays
-   const [imageNumbersCats, setImageNumbersCats] = useState(
-      JSON.parse(localStorage.getItem('imageNumbersCats')) ||
-      fillWithRandomNumbers(Object.keys(imageArray).length)
-    );
-   const [imageNumbersCars, setImageNumbersCars] = useState(
-      JSON.parse(localStorage.getItem('imageNumbersCars')) ||
-      fillWithRandomNumbers(Object.keys(imageArray).length)
+   var [imageNumbers, setImageNumbers] = useState(
+      JSON.parse(localStorage.getItem('RandomizedImageNumbers')) ||
+      fillWithRandomNumbers(totalAvailableGridImages)
     );
 
-  //store image type in local storage when either imageNumbersCats, or imageNumbersCars is updated
+  //store image type in local storage when either imageNumbers, or imageNumbers is updated
   useEffect(() => {
-    localStorage.setItem("imageNumbersCats", JSON.stringify(imageNumbersCats));
-    localStorage.setItem("imageNumbersCars", JSON.stringify(imageNumbersCars));
+    localStorage.setItem("RandomizedImageNumbers", JSON.stringify(imageNumbers));
   });
 
 
@@ -156,24 +150,32 @@ const catchaIcons = collectImages(require.context('./images/icons', false, /\.(p
    */
  	const gridSize = 16;
  	const gridImages = [];
+  var imageSrc = [];
 
- 	const images = props.imageType ? imageArray : imageArray;
-  var imageNumbers = props.imageType ? imageNumbersCars : imageNumbersCats;
+  var currentImage = imageNumbers.shift();
+
+  for(var i = 0; i < gridSize; i++) {
+      let imageName = "grid"+ String(currentImage).padStart(2, '0') + "_" + String(i+1).padStart(2, '0') + ".jpg";
+      imageSrc.push(imageName);
+   }
+
+
+ 	// const images = props.imageType ? imageArray : imageArray;
 
   //is there at least the same number of elements in the imageNumbers arrays as the grid size?
   if(imageNumbers.length < gridSize) {
 
     //if not, regenerate the random number array so there is enough random numbers to select images for the grid
-    imageNumbers = fillWithRandomNumbers(Object.keys(images).length);
+    imageNumbers = fillWithRandomNumbers(totalAvailableGridImages);
 
     //if the image type is 'cars', then update the local storage for 'cars'
     if(props.imageType) {
-      setImageNumbersCars(imageNumbers);
+      setImageNumbers(imageNumbers);
     }
 
   //if the image type is 'cats', then update the local storage for 'cats'
     if(!props.imageType) {
-      setImageNumbersCats(imageNumbers);
+      setImageNumbers(imageNumbers);
 
     }
 
@@ -195,7 +197,7 @@ const catchaIcons = collectImages(require.context('./images/icons', false, /\.(p
      * Create the <div> and insert a random image on the image grid;
      */
      gridImages.push(
-      <CatchaImage fileNumber={fileNumber} imageIndex={imageIndex} images={images} imageType={props.imageType} key={imageIndex} />
+      <CatchaImage fileNumber={fileNumber} imageIndex={imageIndex} imageType={props.imageType} key={imageIndex} source={imageSrc} />
      );
  }
 
@@ -245,9 +247,8 @@ function fillWithRandomNumbers(numElements) {
  */
  function CatchaImage(props) {
 
- 	//filename of the image to load, depending on which folder it's coming from - cars or cats.
- 	var fileName = "grid01"+ "_" + String(props.imageIndex).padStart(2, '0') + ".jpg";
-  console.log(fileName);
+ 	//filename of the image to load
+ 	var fileName = String(props.source[props.imageIndex-1]);
 
   /*
    * State variables
@@ -267,7 +268,7 @@ function fillWithRandomNumbers(numElements) {
 		   	<span className="catcha-image-size-aligner" key={"aligner" + props.imageIndex}></span>
 		   	<img
           alt="source to identify" 
-			   	src={props.images[fileName].default} 
+			   	src={fileName} 
 			   	onLoad={() => (setLoaded(true))} 
 			   	className={isSelected ? "catcha-image image-is-clicked" : "catcha-image" } 
 			   	onClick={() => setSelected(!isSelected )}
