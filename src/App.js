@@ -152,7 +152,7 @@ const catchaIcons = collectImages(require.context('./images/icons', false, /\.(p
   /* 
    * Set up the grid and get the images for either Cats or Cars, depending on which image type is selected.
    */
- 	const gridSize = 9;
+ 	const gridSize = 16;
  	const gridImages = [];
 
  	const images = props.imageType ? catchaCarImages : catchaCatImages;

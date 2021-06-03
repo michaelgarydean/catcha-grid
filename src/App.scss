@@ -31,13 +31,16 @@
   $copy_color: #FFFFFF;
   $submit_button_color: rgb(165, 196, 235);
 
-  $image_size: 124px;
+  $image_size: 94px;
+  $grid_gap: 1px;
   $icon_size: 27px;
 
   $image-resizing-speed: 0.15s;
   $image-size-on-click: 79%;
 
   $inner_elements_padding: 7px;
+
+  $grid_row_columns: 4;
 
  /*
   * DEFAULT REACT
@@ -183,8 +186,8 @@
 .catcha-images {
 
   display: grid;
-  grid-gap: 3px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-gap: $grid_gap;
+  grid-template-columns: repeat($grid_row_columns, 1fr);
 
   margin-top: 4px;
 
