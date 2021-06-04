@@ -28,11 +28,13 @@ import { useState, useEffect } from "react";
    */
    return (
 	   	<div id={"image" + props.imageIndex} className="catcha-single-image" key={"image-div" + props.imageIndex}>
+        {!isLoaded && <div className="hide-image-before-load" key={"image-hider" + props.imageIndex}></div>}
 		   	<div className={isSelected ? "checkmark image-is-clicked" : "checkmark" } key={"checkmark" + props.imageIndex}></div>
 		   	<span className="catcha-image-size-aligner" key={"aligner" + props.imageIndex}></span>
 		   	<img
           alt="source to identify" 
 			   	src={fileName.default} 
+          onLoad={() => (setLoaded(true))} 
 			   	className={isSelected ? "catcha-image image-is-clicked" : "catcha-image" } 
 			   	onClick={() => setSelected(!isSelected )}
           key={"source-image" + props.imageIndex}
