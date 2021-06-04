@@ -1,5 +1,5 @@
 import './App.scss';
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SubmitButton from "./SubmitButton";
 import CatchaImageGrid from "./CatchaImageGrid";
 import Icons from "./Icons";

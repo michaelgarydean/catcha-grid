@@ -1,5 +1,6 @@
 {
   "name": "catcha-app",
+  "homepage": "/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,14 +10,21 @@
     "node-sass": "^6.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-image": "^4.0.3",
     "react-scripts": "4.0.3",
+    "source-map-explorer": "^2.5.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
-    "build": "react-scripts build && cp CNAME build/ && cd build/ && surge",
+    "build": "react-scripts build",
+    "postbuild": "react-snap && cp CNAME build/ && cd build/ && surge",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "reactSnap": {
+    "inlineCss": true
   },
   "eslintConfig": {
     "extends": [
@@ -37,6 +45,7 @@
     ]
   },
   "devDependencies": {
-    "prettier": "2.3.0"
+    "prettier": "2.3.0",
+    "react-snap": "^1.23.0"
   }
 }

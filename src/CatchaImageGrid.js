@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CatchaImage from "./CatchaImage";
 
-//const sources = collectImages(require.context('./images/grid_separated', false, /\.(png|jpe?g|svg)$/));
+const sources = collectImages(require.context('./images/grid_separated', false, /\.(png|jpe?g|svg)$/));
 
 /* 
  * ==============================================================
@@ -62,7 +62,7 @@ import CatchaImage from "./CatchaImage";
      * Create the <div> and insert a random image on the image grid;
      */
      gridImages.push(
-        <CatchaImage imageIndex={imageIndex} key={imageIndex} source={`${process.env.PUBLIC_URL}/${imageSrc}`} />
+        <CatchaImage imageIndex={imageIndex} key={imageIndex} source={sources[imageSrc]} />
      );
  }
 
