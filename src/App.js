@@ -47,7 +47,6 @@ const totalAvailableGridImages = 50;            //total possibilities of the big
             <h2>{imageType ? "cars" : "cats"}</h2>
             <p>Click verify once there are none left.</p>
           </div>
-
             {/* Grid of images */}
             {/* If imageType is 0, show cats, otherwise, show cars. */}
             <CatchaImageGrid gridSize={gridSize} numGrids={totalAvailableGridImages} />

@@ -7,13 +7,11 @@ import { useState, useEffect } from "react";
  */
  function CatchaImage(props) {
 
+  const [hasMounted, setHasMounted] = useState(false);
+
+
  	//filename of the image to load
  	var fileName = props.source;
-
-  useEffect(() => {
-          const img = new Image();
-          img.src = fileName.default;
-  }, []);
 
   /*
    * State variables
@@ -28,13 +26,11 @@ import { useState, useEffect } from "react";
    */
    return (
 	   	<div id={"image" + props.imageIndex} className="catcha-single-image" key={"image-div" + props.imageIndex}>
-        {!isLoaded && <div className="hide-image-before-load" key={"image-hider" + props.imageIndex}></div>}
 		   	<div className={isSelected ? "checkmark image-is-clicked" : "checkmark" } key={"checkmark" + props.imageIndex}></div>
 		   	<span className="catcha-image-size-aligner" key={"aligner" + props.imageIndex}></span>
 		   	<img
           alt="source to identify" 
-			   	src={fileName.default} 
-          onLoad={() => (setLoaded(true))} 
+			   	src={require('./images/grid_separated/' + fileName).default} 
 			   	className={isSelected ? "catcha-image image-is-clicked" : "catcha-image" } 
 			   	onClick={() => setSelected(!isSelected )}
           key={"source-image" + props.imageIndex}

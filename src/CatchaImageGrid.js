@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import CatchaImage from "./CatchaImage";
+import { useEffect, useState, lazy, Suspense } from "react";
+const CatchaImage = lazy(() => import('./CatchaImage'));
 
-const sources = collectImages(require.context('./images/grid_separated', false, /\.(png|jpe?g|svg)$/));
+//const sources = collectImages(require.context('./images/grid_separated', false, /\.(png|jpe?g|svg)$/));
 
 /* 
  * ==============================================================
@@ -60,9 +60,17 @@ const sources = collectImages(require.context('./images/grid_separated', false, 
 
     /*
      * Create the <div> and insert a random image on the image grid;
+     * Lazy load the images, so just load black spaces for the fallback when the image hasn't loaded yet
      */
+
      gridImages.push(
-        <CatchaImage imageIndex={imageIndex} key={imageIndex} source={sources[imageSrc]} />
+      <Suspense fallback={
+        <div id={"image" + imageIndex} className="catcha-single-image">
+        <div className="hide-image-before-load"></div>
+      </div>
+      }>
+        <CatchaImage imageIndex={imageIndex} key={imageIndex} source={imageSrc} />
+      </Suspense>
      );
  }
 
