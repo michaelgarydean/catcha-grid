@@ -4,31 +4,31 @@ import { useEffect, useState, Suspense } from "react";
 import CatchaImageGrid from "./CatchaImageGrid";
 import Icons from "./Icons";
 
-
-//import Icons from "./Icons";
-
 /* Load images from the folders */
 //const sources = collectImages(require.context('./images/grid_separated', false, /\.(png|jpe?g|svg|webp)$/));
 
 //total number of images that make up a grid (ex 16 = 4x4 grid)
 const gridSize = 16;
-const numGridImages = 3;
+
+//Total number of images to be shown on the grid, made up by n=gridSize smaller images
+const numGridImages = 50;
 
 /*
  * Render the webpage with the app
  */
  function App() {
-    /*
-   * State variables
-   * isSubmitting: Behavior to change while the "submitting process" is taking place. 
-   * This is just for user feedback to see their action having an effect.
+
+  /*
+   * Behavior to change while the "submitting process" is taking place. 
+   * This is for user feedback to see their action having an effect and to hide the loading images until they are all loaded
    */
   const [isSubmitting, setSubmitting] = useState(false);
   
   /*
-   * SET IMAGE TYPE: 0 for Cats, 1 for Cars
+   * Image type is 0 for Cats and 1 for Cars
    */
-   const [imageType, setImageType] = useState(0);
+   const [imageType, setImageType] = useState(randomNumber(2)-1);
+
   /* 
    * Randomly sort the order of the images shown on the grid so they don't repeat until all the images have been shown.
    */
@@ -36,20 +36,23 @@ const numGridImages = 3;
     fillWithRandomNumbers(numGridImages)
   );
 
-  useEffect( () => {
-     console.log("Current image order: " + imageNumbers);
-  }, [imageNumbers]);
+
+  // useEffect( () => {
+  //    console.log("Current image order: " + imageNumbers);
+  // }, [imageNumbers]);
 
 
   /*
    * Store the current index in the components state.
    */
-  var [currentImageIndex, setCurrentImageIndex] = useState(0);
+  var [currentImageIndex, setCurrentImageIndex] = useState(randomNumber(numGridImages));
 
+  //If a new image is loaded, make sure that the non-repeating randomized list has enough numbers to draw from for the next random image.
   useEffect( () => {
      if(currentImageIndex >= numGridImages-1) {
       setImageNumbers(fillWithRandomNumbers(numGridImages));
      }
+     setSubmitting(false);
   }, [currentImageIndex]);
 
   return (
@@ -79,7 +82,17 @@ const numGridImages = 3;
               <div className="button-container">
                {/* Before refreshing the page, change the image type for show the next type when the page refreshes  refreshPage() */}
                {/*<button className={isSubmitting ? "verify-button button-on-submit" : "verify-button" } onClick={() => {setSubmitting(true); setImageType(!imageType); setCurrentImage(13);}}>VERIFY</button>*/}
-               <button className={"verify-button" } onClick={() => {setImageType(!imageType); setCurrentImageIndex((currentImageIndex+1)%numGridImages);  }}>VERIFY</button>
+               <button 
+                className={isSubmitting ? "verify-button button-on-submit" : "verify-button" } 
+                onClick={() => { 
+                  setSubmitting(true); 
+                  setTimeout( function(){ 
+                    setImageType(!imageType);
+                    setCurrentImageIndex((currentImageIndex+1)%numGridImages);
+                  }, 1500) 
+                }}>
+                VERIFY
+                </button>
              </div>
           </div>
         </div> {/* end catcha-interior-elements-container */}
