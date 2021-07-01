@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import './app.scss';
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useContext } from "react";
 import CatchaImageGrid from "./CatchaImageGrid";
+import {LoadingContext} from "./LoadingContext";
 import Icons from "./Icons";
 
 /* Load images from the folders */
@@ -23,6 +24,7 @@ const numGridImages = 50;
    * This is for user feedback to see their action having an effect and to hide the loading images until they are all loaded
    */
   const [isSubmitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useContext(LoadingContext);
   
   /*
    * Image type is 0 for Cats and 1 for Cars
@@ -35,12 +37,6 @@ const numGridImages = 50;
   var [imageNumbers, setImageNumbers] = useState(
     fillWithRandomNumbers(numGridImages)
   );
-
-
-  // useEffect( () => {
-  //    console.log("Current image order: " + imageNumbers);
-  // }, [imageNumbers]);
-
 
   /*
    * Store the current index in the components state.
@@ -71,9 +67,9 @@ const numGridImages = 50;
             <h2>{imageType ? "cars" : "cats"}</h2>
             <p>Click verify once there are none left.</p>
           </div>
-
-          <CatchaImageGrid gridSize={gridSize} whichImage={currentImageIndex+1} />
-
+            <div className="grid-loader" style={{visibility: loading ? 'hidden': 'visible' }}>
+              <CatchaImageGrid gridSize={gridSize} whichImage={currentImageIndex+1} />
+            </div>
           </div> {/* end catcha-top-elements-container */}
 
           <div className="catcha-footer">

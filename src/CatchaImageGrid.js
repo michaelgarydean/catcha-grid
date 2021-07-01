@@ -1,6 +1,7 @@
 import React from 'react';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import CatchaImage from "./CatchaImage";
+import {LoadingContext} from "./LoadingContext";
 
 var gridImages = [];
 
@@ -10,6 +11,24 @@ var gridImages = [];
  * ==============================================================
  */
  function CatchaImageGrid(props) {
+
+  var imagesLoaded = 0;
+
+  const [loading, setLoading] = useContext(LoadingContext);
+
+  //When all the <img> have loaded in the <GridImage> component, then update the state so we know loading is done
+  const handleChildLoad = () => {
+
+    imagesLoaded++;
+
+    console.log("image: " + imagesLoaded);
+
+    if(imagesLoaded >= 9) {
+      //update state
+      setLoading(false);
+    }
+
+  };
 
   //the paths of all the images needed to show a single image on the grid
   gridImages = createGrid(props.gridSize, props.whichImage);
@@ -33,7 +52,7 @@ var gridImages = [];
       {
         gridImages.map((source, gridPosition) => {
           return(
-              <CatchaImage src={source} imageIndex={gridPosition} checkmarkPath={checkmarkPath} />
+              <CatchaImage src={source} imageIndex={gridPosition} checkmarkPath={checkmarkPath} key={"image" + props.whichImage + gridPosition} onImgLoad={handleChildLoad} />
           )
         })
       }

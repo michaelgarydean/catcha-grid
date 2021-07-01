@@ -186,6 +186,12 @@ body {
 /* 
  * CATCHA top elemments
  */
+
+/* Image grid */
+.grid-loader {
+  min-height: 379px;
+}
+
 .catcha-top-elements-container {
   padding: $inner_elements_padding;
   border-bottom: solid;
@@ -261,7 +267,6 @@ body {
 /* when the image has not been clicked */
 .catcha-image {
 
-  @extend .catcha-image-animation;
   animation-name: fade-in-and-grow;
 
 }
