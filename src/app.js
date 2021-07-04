@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import './app.scss';
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import CatchaImageGrid from "./CatchaImageGrid";
 import {LoadingContext} from "./LoadingContext";
 import Icons from "./Icons";
 
-/* Load images from the folders */
-//const sources = collectImages(require.context('./images/grid_separated', false, /\.(png|jpe?g|svg|webp)$/));
+/*
+ * = = = =
+ * GLOBALS
+ * = = = =
+ */
 
 //total number of images that make up a grid (ex 16 = 4x4 grid)
 const gridSize = 16;
@@ -15,41 +18,46 @@ const gridSize = 16;
 const numGridImages = 50;
 
 /*
- * Render the webpage with the app
+ * = = = =
+ * APP
+ * = = = =
  */
  function App() {
 
   /*
-   * Behavior to change while the "submitting process" is taking place. 
-   * This is for user feedback to see their action having an effect and to hide the loading images until they are all loaded
+   * Store whether the images have all been loaded, or not. Defaults to true.
    */
-  const [isSubmitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useContext(LoadingContext);
   
   /*
-   * Image type is 0 for Cats and 1 for Cars
+   * Image type is 0 for Cats and 1 for Cars. Used to update the interface text.
    */
-   const [imageType, setImageType] = useState(randomNumber(2)-1);
+   const imageType = useRef(randomNumber(2)-1);
 
   /* 
    * Randomly sort the order of the images shown on the grid so they don't repeat until all the images have been shown.
    */
-  var [imageNumbers, setImageNumbers] = useState(
+  const [imageNumbers, setImageNumbers] = useState(
     fillWithRandomNumbers(numGridImages)
   );
 
   /*
-   * Store the current index in the components state.
+   * Generate a random number and store it as the current image we're showing on the grid.
    */
-  var [currentImageIndex, setCurrentImageIndex] = useState(randomNumber(numGridImages));
+  const currentImage = useRef(randomNumber(numGridImages));
 
-  //If a new image is loaded, make sure that the non-repeating randomized list has enough numbers to draw from for the next random image.
+  /* 
+   * Once a new image is loaded, make sure that the randomized list of non-repeating image numbers 
+   * has enough numbers to draw from for the next random image.
+   */
   useEffect( () => {
-     if(currentImageIndex >= numGridImages-1) {
+
+    //@todo verify the logic here
+    if(currentImage.current >= numGridImages-1) {
       setImageNumbers(fillWithRandomNumbers(numGridImages));
-     }
-     setSubmitting(false);
-  }, [currentImageIndex]);
+    }
+
+  }, []);
 
   return (
 
@@ -67,26 +75,24 @@ const numGridImages = 50;
             <h2>{imageType ? "cars" : "cats"}</h2>
             <p>Click verify once there are none left.</p>
           </div>
-            <div className="grid-loader" style={{visibility: loading ? 'hidden': 'visible' }}>
-              <CatchaImageGrid gridSize={gridSize} whichImage={currentImageIndex+1} />
-            </div>
+
+          <CatchaImageGrid gridSize={gridSize} whichImage={currentImage.current} />
           </div> {/* end catcha-top-elements-container */}
 
           <div className="catcha-footer">
             <span className="icon-size-aligner"></span>
             <Icons />
               <div className="button-container">
-               {/* Before refreshing the page, change the image type for show the next type when the page refreshes  refreshPage() */}
-               {/*<button className={isSubmitting ? "verify-button button-on-submit" : "verify-button" } onClick={() => {setSubmitting(true); setImageType(!imageType); setCurrentImage(13);}}>VERIFY</button>*/}
-               <button 
-                className={isSubmitting ? "verify-button button-on-submit" : "verify-button" } 
-                onClick={() => { 
-                  setSubmitting(true); 
-                  setTimeout( function(){ 
-                    setImageType(!imageType);
-                    setCurrentImageIndex((currentImageIndex+1)%numGridImages);
-                  }, 1500) 
-                }}>
+              
+               {/* Before updating the page, change the image type for show the next type */}
+                <button 
+                  className={loading ? "verify-button button-on-submit" : "verify-button" } 
+                  onClick={() => {
+                    imageType.current = !imageType.current; 
+                    currentImage.current=currentImage.current+1;
+                    setLoading(true);
+                  }}
+                >
                 VERIFY
                 </button>
              </div>
@@ -126,10 +132,8 @@ function fillWithRandomNumbers(numElements) {
 
 }
 
-/* 
- * Generate a random number
- */
- function randomNumber(maxNumber) {
+//Generate a random number
+function randomNumber(maxNumber) {
   var randomNumber = Math.floor((Math.random() * maxNumber) + 1);
   return randomNumber;
 }

@@ -1,9 +1,10 @@
 import React from 'react';
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef, useMemo } from "react";
 import CatchaImage from "./CatchaImage";
 import {LoadingContext} from "./LoadingContext";
 
-var gridImages = [];
+//Storage for all the paths/sources for the images currently being shown on the grid.
+var imagesSources = [];
 
 /* 
  * ==============================================================
@@ -12,54 +13,60 @@ var gridImages = [];
  */
  function CatchaImageGrid(props) {
 
-  var imagesLoaded = 0;
+  //count how many images have been fully loaded and are in the DOM
+  const imagesLoaded = useRef(0);
 
+  //are images still loading?
   const [loading, setLoading] = useContext(LoadingContext);
+
+  //Reset the image count to 0 if loading has been set to true after a render
+  useEffect( () => {
+
+    if(loading) {
+      imagesLoaded.current = 0;
+    }
+    
+  }, [loading]);  
 
   //When all the <img> have loaded in the <GridImage> component, then update the state so we know loading is done
   const handleChildLoad = () => {
 
-    imagesLoaded++;
+    //imagesLoaded++;
+    imagesLoaded.current += 1;
 
-    console.log("image: " + imagesLoaded);
+    console.log("image: " + imagesLoaded.current);
 
-    if(imagesLoaded >= 9) {
+    if(imagesLoaded.current >= props.gridSize) {
       //update state
       setLoading(false);
     }
 
   };
 
-  //the paths of all the images needed to show a single image on the grid
-  gridImages = createGrid(props.gridSize, props.whichImage);
+  //an array of image paths for the src attribute in the <img> tags 
+  if(loading) {
+    imagesSources = createGrid(props.gridSize, props.whichImage);
+  }
 
-  //the checkmark when an image is selected
-  var checkmarkPath = 'checkmark.png';
+  //create child elements on first render, then don't re-render unless imageSources is updated
+  const children = useMemo(() =>
+    imagesSources.map((source, gridPosition) => {
+      return(
+        //<CatchaImage src={source} imageIndex={gridPosition} onImgLoad={handleChildLoad} key={"child-image-" + source} />
+        <CatchaImage src={source} imageIndex={gridPosition} key={"child-image-" + source} onImgLoad={handleChildLoad} />
+      )
+    }), [imagesSources]
+  );
 
-  /*
-   * If whichImage gets updated in the parent, re-render the component with a new image grid. 
-   * whichImage is the overall big image made up by smaller images.
-   */
-  useEffect( () => {
-     gridImages = createGrid(props.gridSize, props.whichImage);
-  }, [props.whichImage]);
+   return <React.Fragment>
+      <div className="loading" style={{display: loading ? "block" : "none"}}></div>
+      <div key={props.imageType} className="catcha-images" style={{visibility: loading ? "hidden" : "visible"}}>
+        {/* CatchaImage */}
+        { children }
+        {/* end CatchaImage */}
+      </div>
+    </React.Fragment>;
 
-   return (
-
-    <div key={props.whichImage} className="catcha-images">
-    
-    {/* CatchaImage */}
-      {
-        gridImages.map((source, gridPosition) => {
-          return(
-              <CatchaImage src={source} imageIndex={gridPosition} checkmarkPath={checkmarkPath} key={"image" + props.whichImage + gridPosition} onImgLoad={handleChildLoad} />
-          )
-        })
-      }
-    {/* end CatchaImage */}
-
-    </div>
-    )
   }
 
   /*
@@ -72,7 +79,7 @@ var gridImages = [];
    * @returns   An array of strings for the filenames of images on the grid.
    */
   function createGrid(gridSize, whichImage) {
-    var imagesSources = [];
+    var sources = [];
 
     /* 
    * Create an array that contains all the CatchaImage components
@@ -83,10 +90,10 @@ var gridImages = [];
     var imageSrc = "grid"+ String(whichImage).padStart(2, '0') + "_" + String(squareIndex).padStart(2, '0') + ".jpg";
 
     //Add filenames to the array
-    imagesSources.push(imageSrc);
+    sources.push(imageSrc);
    }
 
-   return imagesSources;
+   return sources;
 
   }
 
