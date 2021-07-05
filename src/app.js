@@ -87,7 +87,7 @@ const numGridImages = 50;
           <div className="catcha-header">
             <p>Select all squares with</p>
             {/* If imageType is 0, show cats, otherwise, show cars. */}
-            <h2>{imageType ? "cars" : "cats"}</h2>
+            <h2>{imageType.current ? "cars" : "cats"}</h2>
             <p>Click verify once there are none left.</p>
           </div>
 
