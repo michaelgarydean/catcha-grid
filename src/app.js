@@ -7,6 +7,17 @@ import Icons from "./Icons";
 
 /*
  * = = = =
+ * HEN BOILERPLATE
+ * = = = =
+ */
+const creator = new URLSearchParams(window.location.search).get('creator')
+const viewer = new URLSearchParams(window.location.search).get('viewer')
+
+console.log('OBJKT created by', creator)
+console.log('OBJKT viewed by', viewer)
+
+/*
+ * = = = =
  * GLOBALS
  * = = = =
  */
@@ -42,22 +53,26 @@ const numGridImages = 50;
   );
 
   /*
-   * Generate a random number and store it as the current image we're showing on the grid.
+   * Generate a random number and the show the image it corresponds on first render.
    */
   const currentImage = useRef(randomNumber(numGridImages));
 
   /* 
-   * Once a new image is loaded, make sure that the randomized list of non-repeating image numbers 
-   * has enough numbers to draw from for the next random image.
+   * Each time the verify button is clicked, the currentImage index increases by one.
+   * 
+   * After rendering the loading state, 
+   * If the current image is more than the total number of images available,
+   * then resetthe currentImage at index 1 and refill the imageNumbers state with a new random order
+   * before rendering the next loaded image.
    */
   useEffect( () => {
 
-    //@todo verify the logic here
-    if(currentImage.current >= numGridImages-1) {
+    if(currentImage.current > numGridImages) {
+      currentImage.current = 1;
       setImageNumbers(fillWithRandomNumbers(numGridImages));
     }
 
-  }, []);
+  }, [loading]);
 
   return (
 

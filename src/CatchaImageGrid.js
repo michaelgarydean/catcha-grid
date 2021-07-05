@@ -34,8 +34,6 @@ var imagesSources = [];
     //imagesLoaded++;
     imagesLoaded.current += 1;
 
-    console.log("image: " + imagesLoaded.current);
-
     if(imagesLoaded.current >= props.gridSize) {
       //update state
       setLoading(false);
