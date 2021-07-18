@@ -25,6 +25,8 @@ var imagesSources = [];
     if(loading) {
       imagesLoaded.current = 0;
     }
+
+    //console.log(imagesSources);
     
   }, [loading]);  
 

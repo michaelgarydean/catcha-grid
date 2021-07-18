@@ -17,10 +17,11 @@
  *              for her artworks based on privacy and personal data. Cars or Cats?
  */
 
+
   /* GLOBAL VARIABLES */
 
-  $catcha_width: 394px;
   $catcha_height: 572px;
+  $catcha_width: 394px;
 
   $outer_border_grey: #CECECE;
   $inner_border_grey: #DFDFDF;
@@ -41,7 +42,6 @@
   $inner_elements_padding: 7px;
 
   $grid_row_columns: 4;
-
 
 /* 
  * FONT FACES
@@ -131,6 +131,7 @@ body {
   position: absolute;
   width: $catcha_width;
   height: $catcha_height;
+  
 
 }  
 
@@ -200,6 +201,7 @@ body {
 }
 
 .catcha-header {
+  width: 378px;
   padding: 24px 24px;
 
   text-align: left;
@@ -380,4 +382,138 @@ body {
 
   background-color:  $submit_button_color;
 
+}
+
+/* 
+    After minting on HEN, the iFrame isn't big enough to show the entire app.
+    
+    FIX: 20210717
+
+    After a 464px, app will be the original size.
+    Less than 464px, app will be zoomed to 81%.
+    Less then 382, app will be 62%;
+
+  */
+
+@media only screen and (max-height: 577px) {
+  $scale_size: 0.81;
+  $scaled_height: 465px;
+  $scaled_image_size: $image_size*0.8;
+
+  .catcha-header {
+    width: 304px; 
+    padding: 24px*$scale_size 24px*$scale_size;
+    font-size: 14px*$scale_size;
+
+    h2 {
+      font-size: 28px*$scale_size;
+    }
+
+  }
+
+  .catcha-placement {
+    width: $catcha_width*$scale_size;
+    height: $scaled_height;
+
+  }  
+  .catcha-images {
+    margin-top: 2px;
+
+    .catcha-single-image {
+
+      width: $scaled_image_size;
+      height: $scaled_image_size;
+
+      img {
+        height: $scaled_image_size;
+      } 
+    }
+
+  }
+
+  .verify-button {
+
+    padding: 13px*$scale_size 25px*$scale_size;
+    margin: 9px*$scale_size 1px*$scale_size;
+
+    font-size: 13px*$scale_size;
+  }
+
+  .catcha-icons {
+
+    .icon {
+      margin: 14px*$scale_size 8px*$scale_size;
+      width: $icon_size*$scale_size;
+      height: $icon_size*$scale_size;
+    }
+  }
+
+  .checkmark {
+    width: 50px*$scale_size;
+    height: 50px*$scale_size;
+    background-size: 30px*$scale_size;
+
+  }
+}
+
+@media only screen and (max-height: 464px) {
+  $scale_size: 0.62;
+  $scaled_height: 356px;
+  $scaled_image_size: $image_size*0.61;
+
+  .catcha-header {
+    width: 230px;
+    padding: 24px*$scale_size 24px*$scale_size;
+    font-size: 14px*$scale_size;
+
+    h2 {
+      font-size: 28px*$scale_size;
+    }
+
+  }
+
+  .catcha-placement {
+    width: $catcha_width*$scale_size;
+    height: $scaled_height;
+
+  }  
+  .catcha-images {
+    margin-top: 2px;
+    grid-gap: 1px;
+
+    .catcha-single-image {
+
+      width: $scaled_image_size;
+      height: $scaled_image_size;
+
+      img {
+        height: $scaled_image_size;
+      } 
+    }
+
+  }
+
+  .verify-button {
+
+    padding: 13px*$scale_size 25px*$scale_size;
+    margin: 9px*$scale_size 1px*$scale_size;
+
+    font-size: 13px*$scale_size;
+  }
+
+  .catcha-icons {
+
+    .icon {
+      margin: 14px*$scale_size 8px*$scale_size;
+      width: $icon_size*$scale_size;
+      height: $icon_size*$scale_size;
+    }
+  }
+
+  .checkmark {
+    width: 50px*$scale_size;
+    height: 50px*$scale_size;
+    background-size: 30px*$scale_size;
+
+  }
 }
